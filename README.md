@@ -10,7 +10,7 @@ I am the author of all original work committed to this repository, as identified
 + **University Email:** pfz00001@mix.wvu.edu
 + **Student ID:** 800323850
 
-Co-Author Identification
+## Co-Author Identification
 My peer was a co-author of some original work committed to this repository, as identified below:
 
 Full Name: Remy Rodriguez
