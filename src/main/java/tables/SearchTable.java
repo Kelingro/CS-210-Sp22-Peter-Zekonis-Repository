@@ -1,6 +1,5 @@
 package tables;
 
-<<<<<<< HEAD
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -91,77 +90,6 @@ public class SearchTable extends Table {
 		else {
 			return null;
 			}
-=======
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
-/**
- * Implements a search-based table
- * using a list data structure.
- */
-public class SearchTable extends Table {
-	private List<List<Object>> list;
-
-	/**
-	 * Creates a table and initializes
-	 * the data structure.
-	 *
-	 * @param tableName the table name
-	 * @param columnNames the column names
-	 * @param columnTypes the column types
-	 * @param primaryIndex the primary index
-	 */
-	public SearchTable(String tableName, List<String> columnNames, List<String> columnTypes, Integer primaryIndex) {
-		setTableName(tableName);
-		setColumnNames(columnNames);
-		setColumnTypes(columnTypes);
-		setPrimaryIndex(primaryIndex);
-
-		list = new LinkedList<>();
-	}
-
-	@Override
-	public void clear() {
-		list.clear();
-	}
-
-	@Override
-	public boolean put(List<Object> row) {
-		Object key = row.get(primaryIndex);
-
-		for (int i = 0; i < list.size(); i++) {
-			List<Object> old = list.get(i);
-			if (old != null && old.get(primaryIndex).equals(key)) {
-				list.set(i, row);
-				return true;
-			}
-		}
-		list.add(row);
-		return false;
-	}
-
-	@Override
-	public boolean remove(Object key) {
-		for (int i = 0; i < list.size(); i++) {
-			List<Object> row = list.get(i);
-			if (row != null && row.get(primaryIndex).equals(key)) {
-				list.remove(i);
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public List<Object> get(Object key) {
-		for (int i = 0; i < list.size(); i++) {
-			List<Object> row = list.get(i);
-			if (row.get(primaryIndex).equals(key))
-				return row;
-		}
-		return null;
->>>>>>> refs/remotes/upstream/master
 	}
 
 	@Override
