@@ -25,8 +25,7 @@ public class HashArrayTable extends Table {
 	private float loadFactor;
 	private int capacity;
 	private int size;
-	
-	//add prime number method up here
+
 
 	/**
 	 * Creates a table and initializes
@@ -104,7 +103,7 @@ public class HashArrayTable extends Table {
 		// calculate hash of key using hash function
 		//for each step number from 0 to capacity-1
 		//try element index of 1
-		if(null == key) throw new NullPointerException("key == null");
+		if(key == null) throw new NullPointerException("key == null");
 		
 		final int keyHash = HashFunction(key);
 		int index = hash1(keyHash);
