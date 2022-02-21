@@ -7,20 +7,7 @@ import java.util.*;
  * using an array data structure.
  */
 public class HashArrayTable extends Table {
-//	private static class Node{
-//		final int keyHash;
-//		final Object key;
-//		List<Object>value;
-//		
-//		public Node(Object key, List<Object>value) {
-//			this.keyHash = HashArrayTable.HashFunction(key);
-//			this.key = key;
-//			this.value = value;
-//		
-//	}
-//	private Object[] Node;
-	
-	
+
 	private static final int DEFAULT_CAPACITY = 19;
 	private Object[] hTable;
 	private double loadFactor;
@@ -156,10 +143,8 @@ public class HashArrayTable extends Table {
 		}
 		else {
 			return key.hashCode();
-		}
-//		return key.hashCode();
-	}
-	
+		}}
+
 	@Override
 	public void clear() {
 		final Object[] old = this.hTable;
@@ -233,7 +218,6 @@ public class HashArrayTable extends Table {
 		Object[] copy = hTable;
 		int newC = 0;
 		newC = nextPrime(oldCapacity);
-		System.out.println(newC);
 		hTable = new Object[newC];
 		
 		for(int i = 0; i<oldCapacity; ++i) {
