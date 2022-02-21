@@ -44,7 +44,7 @@ public abstract class DFSModule {
 	 * <p>
 	 * You may reassign this when debugging.
 	 */
-	public static final int TIMEOUT_MILLIS = 100;
+	public static final int TIMEOUT_MILLIS = 1000000000;
 
 	protected static int ungraded, passed;
 
