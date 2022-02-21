@@ -65,7 +65,7 @@ public class HashArrayTable extends Table {
 				if (recycle != -1) {
 					hTable[recycle] = row;
 					size++;
-					contamination--;
+					contamination--; 
 					return false;
  				} 
 				else {
@@ -85,18 +85,15 @@ public class HashArrayTable extends Table {
 					continue;
 				}
 			}
-			else if(((List<Object>)hTable[wrap(index+index2)]).get(getPrimaryIndex()).toString().equals(key.toString())) {
+			else if(((List<Object>)hTable[wrap(index+index2)]).get(getPrimaryIndex()).equals(key)) {
 				hTable[wrap(index + index2)] = row;
 				return true;
-				}
+				} 
 			else {
 				index2 = perfectSquare(i);
 			}
 		}
-		hTable[wrap(index + index2)] = row;
-		size++;
-		if((double)(size+contamination)/hTable.length >= loadFactor) rehash();
-		return false;
+		return false; 
 	}
 
 	@SuppressWarnings("unchecked")
@@ -109,9 +106,10 @@ public class HashArrayTable extends Table {
 					return false;
 				}
 				if(hTable[wrap(keyHash+index2)] == TOMBSTONE) {
+					index2 = perfectSquare(i);
 					continue;
 				}
-				else if(((List<Object>)hTable[wrap(keyHash+index2)]).get(getPrimaryIndex()).toString().equals(row.toString())) {
+				else if(((List<Object>)hTable[wrap(keyHash+index2)]).get(getPrimaryIndex()).equals(row)) {
 					hTable[wrap(keyHash+index2)] = TOMBSTONE;
 					size--;
 					contamination++;
@@ -134,9 +132,10 @@ public class HashArrayTable extends Table {
 					return null;
 				}
 				else if(hTable[wrap(keyHash + index2)] == TOMBSTONE) {
+					index2 = perfectSquare(i);
 					continue;
 				}
-				else if(((List<Object>)hTable[wrap(keyHash + index2)]).get(getPrimaryIndex()).toString().equals(key.toString())) {
+				else if(((List<Object>)hTable[wrap(keyHash + index2)]).get(getPrimaryIndex()).equals(key)) {
 					return (List<Object>) hTable[wrap(keyHash + index2)];
 				}
 				else {
@@ -147,18 +146,18 @@ public class HashArrayTable extends Table {
 	}
 	
 	public static int HashFunction(Object key) {
-//		if (key instanceof String) {
-//			final char[] buff = ((String)key).toCharArray();
-//			int hash = 0;
-//			for(int i = buff.length; --i>=0;) {
-//				hash = 12 + hash*37;
-//			}
-//			return hash;
-//		}
-//		else {
-//			return key.hashCode();
-//		}
-		return key.hashCode();
+		if (key instanceof String) {
+			final char[] buff = ((String)key).toCharArray();
+			int hash = 0;
+			for(int i = buff.length; --i>=0;) {
+				hash = 12 + hash*37;
+			}
+			return hash;
+		}
+		else {
+			return key.hashCode();
+		}
+//		return key.hashCode();
 	}
 	
 	@Override
@@ -224,7 +223,6 @@ public class HashArrayTable extends Table {
 		else {
 			stepVal = 0 - step*step;
 		}
-		System.out.println(stepVal);
 		return stepVal;
 	}
 	
