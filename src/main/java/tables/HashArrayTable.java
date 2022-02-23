@@ -261,3 +261,4 @@ public class HashArrayTable extends Table {
 		return Math.floorMod(index, hTable.length);	
 		}
 }
+//mod1 completed
