@@ -36,7 +36,7 @@ public abstract class DFSModule {
 	 * <p>
 	 * You may reassign this when debugging.
 	 */
-	public static final Integer RANDOM_SEED = null;
+	public static final Integer RANDOM_SEED = 2000;
 
 	/**
 	 * The maximum time a table operation can

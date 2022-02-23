@@ -7,7 +7,10 @@ import java.util.List;
 
 import drivers.Driver;
 import drivers.Echo;
+import drivers.Macros;
+import drivers.Range;
 import drivers.SQLError;
+import drivers.ShowTable;
 import tables.Table;
 
 /**
@@ -33,7 +36,10 @@ public class Database implements Closeable {
 		tables = new LinkedList<>();
 
 		drivers = List.of(
-			new Echo()
+			new Echo(),
+			new Range(),
+			new ShowTable(),
+			new Macros()
 		);
 	}
 
@@ -64,6 +70,12 @@ public class Database implements Closeable {
 	 * @return the corresponding table, if any.
 	 */
 	public Table find(String tableName) {
+		for(Table table: tables) {
+			if (table.getTableName().equals(tableName)) {
+				return table;
+			}
+			
+		}
 		return null;
 	}
 
@@ -75,7 +87,7 @@ public class Database implements Closeable {
 	 * @return whether the corresponding table exists.
 	 */
 	public boolean exists(String tableName) {
-		return false;
+		return find(tableName)!= null;
 	}
 
 	/**
@@ -88,7 +100,10 @@ public class Database implements Closeable {
 	 * @return whether the table was created.
 	 */
 	public boolean create(Table table) {
-		return false;
+		if (exists(table.getTableName())) return false;
+		
+		tables.add(table);
+		return true;
 	}
 
 	/**
@@ -101,6 +116,13 @@ public class Database implements Closeable {
 	 * @return whether the table was dropped.
 	 */
 	public boolean drop(String tableName) {
+			for(var i =0; i<tables.size(); i++) {
+				if (tables.get(i).getTableName().equals(tableName)) {
+					tables.remove(i);
+					return true;
+				}
+				
+			}
 		return false;
 	}
 
@@ -113,10 +135,10 @@ public class Database implements Closeable {
 	 * @throws SQLError
 	 */
 	public Object interpret(String query) throws SQLError {
-		Object res = drivers.get(0).execute(query, this);
-		if (res != null)
-			return res;
-		else
+		for (var driver: drivers) {
+			var res = driver.execute(query, this);
+			if (res != null) return res;
+		}
 			throw new SQLError("Unrecognized query");
 	}
 

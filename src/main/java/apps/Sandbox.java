@@ -20,13 +20,14 @@ public class Sandbox {
 			List.of("string", "integer", "boolean"),
 			0
 		);
-		table.put(List.of("alpha", 1, true));
-		table.put(List.of("beta", 2, false));
-		table.put(List.of("gamma", 3, false));
-		table.put(List.of("delta", 4, false));
-		table.put(List.of("tau", 19, false));
-		table.put(List.of("pi", 16, false));
-		table.put(List.of("omega", 24, true));
+		table.put(List.of("alpha", 1, true));//
+		table.put(List.of("beta", 2, false));//
+		table.put(List.of("gamma", 3, false));//
+		table.put(List.of("delta", 4, false));//
+		table.put(List.of("tau", 19, false));//
+		table.put(List.of("pi", 16, false));//
+		table.put(List.of("omega", 24, true));//
+		
 
 		System.out.println(table);
 	}
