@@ -27,7 +27,7 @@ public class Console {
 			final PrintStream out = System.out;
 		) {
 			out.print(">> ");
-
+ 
 			String query = in.nextLine();
 			try {
 				out.println("Result: " + db.interpret(query));
@@ -35,6 +35,7 @@ public class Console {
 			catch (SQLError e) {
 				out.println("Error: " + e);
 			}
+			System.out.println();
 		}
 		catch (IOException e) {
 			e.printStackTrace();

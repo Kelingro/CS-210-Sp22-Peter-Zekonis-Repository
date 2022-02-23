@@ -1,215 +1,20 @@
-//package tables;
-//import java.util.Iterator;
-//import java.util.List;
-//
-//
-///**
-// * Implements a hash-based table
-// * using an array data structure.
-// */
-//public class HashArrayTable extends Table {
-//	private static class Node{
-//		final int keyHash;
-//		final Object key;
-//		List<Object>value;
-//		
-//		public Node(Object key, List<Object>value) {
-//			this.keyHash = HashArrayTable.HashFunction(key);
-//			this.key = key;
-//			this.value = value;
-//		}
-//	}
-//	private static final int DEFAULT_CAPACITY = 19;
-//	private int capacity = 19;
-//	private float loadFactor = 5;
-//	private int size;
-//
-//
-//	/**
-//	 * Creates a table and initializes
-//	 * the data structure.
-//	 *
-//	 * @param tableName the table name
-//	 * @param columnNames the column names
-//	 * @param columnTypes the column types
-//	 * @param primaryIndex the primary index
-//	 */
-//	public HashArrayTable(String tableName, List<String> columnNames, List<String> columnTypes, Integer primaryIndex) {
-//		setTableName(tableName);
-//		setColumnNames(columnNames);
-//		setColumnTypes(columnTypes);
-//		setPrimaryIndex(primaryIndex);
-//		
-//		clear();
-//		
-//	}
-//
-//	@Override
-//	public boolean put(List<Object> key) {
-//		//calculate hash of key using hash function
-//		//if chain at index hash is null
-//		//		create empty chain at index hash
-//		//then try row to return
-//		
-//		//if rowkey == parameter key
-//			//hit , replace row in chain
-//			//return true
-//		//fallthrough
-//			//misses create row at end of chain
-//			// if load factor is violated rehash
-//				//return false	
-//		int hashKey = HashFunction(key);
-//		if (hTable[index] != null && hTable[index].key.equals(key)) {
-//			hTable[index] = node;
-//			return true;
-//		}
-//			
-//		}
-//	
-//
-//	@Override
-//	public boolean remove(Object key) {
-//		if(null == key) throw new NullPointerException("key == null");
-//		// calculate hash of key
-//		// if chain at index hash is not null
-//			// for each row in chain
-//				//try row
-//			//if row key equals param
-//			// remove chain
-//			//hit true
-//			//fallthrough miss return false
-//		final int keyHash = HashFunction(key);
-//		return false;
-//		
-//	}
-//
-//	// might want to do all this first
-//	@Override
-//	public List<Object> get(Object key) {
-//			// calculate hash of key
-//			// if chain at index hash is not null
-//				//for each row in chain
-//					//try row
-//					//if row key equals param key
-//						//hit return that row
-//						//otherwise return null
-//		if (null == key) throw new NullPointerException("key == null");
-//		final int keyHash = HashFunction(key);
-//		if (keyHash)
-//		return null;
-//		
-//	}
-//	
-//	public static int HashFunction(Object key) {
-//		if (key instanceof String) {
-//			final char[] buff = ((String)key).toCharArray();
-//			int hash = 0;
-//			for(int i = buff.length; i>=0; i--) {
-//				hash = buff[i] +hash*19;
-//			}
-//			return hash;
-//		}
-//		else {
-//			return key.hashCode();
-//		}
-//	}
-//	
-//	private int wrap (int index) {
-//	return Math.floorMod(index, Node.length);	
-//	}
-//	
-//	private boolean isPrime(int number){
-//	if(number%2 == 0) {
-//		return false;
-//	}	
-//	int count = 0;
-//	for (int i = 3; i<number; i++) {
-//		if(number%i == 0) {
-//			count++;
-//		}
-//		i++;
-//	}
-//	if(count == 1) {
-//		return false;
-//	}
-//	else {
-//		return true;
-//	}
-//	}
-//	
-//	//prime number generator
-//	private int nextPrime(int prev) {
-//	int newNum = prev*2 +1;
-//		
-//		if (isPrime(newNum)==true) {
-//			return newNum;
-//		}
-//		while(isPrime(newNum)==false) {
-//			newNum=newNum+2;
-//		}
-//		return newNum;
-//	}
-//	
-//	@Override
-//	public void clear() {
-//	Node = new Object[DEFAULT_CAPACITY];
-//	size = 0;
-//		}	
-//	
-//	
-//
-//	@Override
-//	public int size() {
-//		
-//		return size;
-//	}
-//
-//	@Override
-//	public Iterator<List<Object>> iterator() {
-//		return null;
-//	}
-//	public void rehash() {
-//		final int oldCapacity = size;
-//		}
-//
-//	@Override
-//	public int capacity() {
-//		// TODO Auto-generated method stub
-//		return Node.length;
-//	}
-//		
-//		
-//	}
-//
 package tables;
 import java.util.Iterator;
 import java.util.List;
-
-
+import java.util.*;
 /**
  * Implements a hash-based table
  * using an array data structure.
  */
 public class HashArrayTable extends Table {
-	private static class Node{
-		final int keyHash;
-		final Object key;
-		List<Object>value;
-		
-		public Node(Object key, List<Object>value) {
-			this.keyHash = HashArrayTable.HashFunction(key);
-			this.key = key;
-			this.value = value;
-		}
-	}
-	
+
 	private static final int DEFAULT_CAPACITY = 19;
-	private final int MAX_SIZE = Integer.MAX_VALUE - 8;
-	private Node[] hTable;
-	private float loadFactor;
+	private Object[] hTable;
+	private double loadFactor;
 	private int capacity;
 	private int size;
-
+	private final Object TOMBSTONE = new Object();
+	private int contamination;
 
 	/**
 	 * Creates a table and initializes
@@ -228,88 +33,103 @@ public class HashArrayTable extends Table {
 		
 		this.capacity = DEFAULT_CAPACITY;
 		this.size = 0;
-		this.loadFactor = 0.5f;
-		this.hTable = new Node[this.capacity];
-		
+		this.loadFactor = 0.65;
+		this.hTable = new Object[this.capacity];
+		 
 		clear();
 	}
 
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean put(List<Object> row) {
-		if (row == null) throw new NullPointerException("row == null");
-		final Object key = row.get(getPrimaryIndex());
-		if (key == null)throw new NullPointerException("key == null");
-		
-		Node node = new Node(key, row);
-	 
-		int index = hash1(node.keyHash);
-		int index2 = hash2(node.keyHash);
-		
-		if (hTable[index] != null && hTable[index].key.equals(key)) {
-			hTable[index] = node;
-			return true;
-		}
-		else if(hTable[index2] != null && hTable[index2].key.equals(key)) {
-			hTable[index2]=node;
-			return true;
-		}
-		else {
-			int pos = index;
-					if (hTable[pos]==null) {
-						hTable[pos] = node;
-						size++;
-						return false;
-					}
-					else {
-						Node copy = hTable[pos];
-						hTable[pos] = node;
-						node = copy;
-					}
-					if(pos == index) {
-						pos = index2;
-					}
-					else {
-						pos = index;
-					}
-						rehash();
-						return put(row);
+		Object key = row.get(getPrimaryIndex());
+		int recycle = -1;
+		int index = HashFunction(key);
+		int index2 = 0;
+		for(int i = 1; i <= hTable.length; i++) {
+			if(hTable[wrap(index+index2)] == null) {
+				if (recycle != -1) {
+					hTable[recycle] = row;
+					size++;
+					contamination--; 
+					return false;
+ 				}
+				else {
+					hTable[wrap(index + index2)] = row;
+					size++;
+					if((double)(size+contamination)/hTable.length >= loadFactor) rehash();
+					return false;
+				} 
+			}
+			else if(hTable[wrap(index+index2)] == TOMBSTONE) {
+				if(recycle == -1) {
+				recycle = wrap(index+index2);
+				index2 = perfectSquare(i);
 				}
+				else {
+					index2 = perfectSquare(i);
+					continue;
+				}
+			}
+			else if(((List<Object>)hTable[wrap(index+index2)]).get(getPrimaryIndex()).equals(key)) {
+				hTable[wrap(index + index2)] = row;
+				return true;
+				} 
+			else {
+				index2 = perfectSquare(i);
+			}
+		}
+		return false; 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public boolean remove(Object key) {
-		if(null == key) throw new NullPointerException("key == null");
-		
-		final int keyHash = HashFunction(key);
-		int index = hash1(keyHash);
-		if(hTable[index] != null && hTable[index].key.equals(key)) {
-			hTable[index] = null;
-			size--;
-			return true;
-		}
-		else {
-			return false;	
-		}
+	public boolean remove(Object row) {
+		final int keyHash = HashFunction(row);
+		int index2 = 0;
+			for(int i = 1; i <= hTable.length; i++) {
+				if(hTable[wrap(keyHash+index2)] == null) {
+					return false;
+				}
+				if(hTable[wrap(keyHash+index2)] == TOMBSTONE) {
+					index2 = perfectSquare(i);
+					continue;
+				}
+				else if(((List<Object>)hTable[wrap(keyHash+index2)]).get(getPrimaryIndex()).equals(row)) {
+					hTable[wrap(keyHash+index2)] = TOMBSTONE;
+					size--;
+					contamination++;
+					return true;
+				}
+				else {
+					index2 = perfectSquare(i);
+				}
+			}
+		return false;
 	}
-
-
-	// might want to do all this first
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Object> get(Object key) {
-		if (null == key) throw new NullPointerException("key == null");
 		final int keyHash = HashFunction(key);
-		int index = hash1(keyHash);
-		int index2 = hash2(keyHash);
-		
-		if (hTable[index] != null && hTable[index].key.equals(key)) {
-			return hTable [index].value;
-		}
-		else if(hTable[index2] != null && hTable[index2].key.equals(key)) {
-			return hTable[index2].value;
-		}
-		else {
-			return null;
-		}
+		int index2 = 0; 
+			for(int i = 1; i < hTable.length; i++) {
+				if(hTable[wrap(keyHash + index2)] == null) {
+					return null;
+				}
+				else if(hTable[wrap(keyHash + index2)] == TOMBSTONE) {
+					index2 = perfectSquare(i);
+					continue;
+				}
+				else if(((List<Object>)hTable[wrap(keyHash + index2)]).get(getPrimaryIndex()).equals(key)) {
+					return (List<Object>) hTable[wrap(keyHash + index2)];
+				}
+				else {
+					index2 = perfectSquare(i);
+				}
+			}
+		return null;
 	}
 	
 	public static int HashFunction(Object key) {
@@ -317,23 +137,22 @@ public class HashArrayTable extends Table {
 			final char[] buff = ((String)key).toCharArray();
 			int hash = 0;
 			for(int i = buff.length; --i>=0;) {
-				hash = buff[i] +hash*37;
+				hash = 12 + hash*37;
 			}
 			return hash;
 		}
 		else {
 			return key.hashCode();
-		}
-	}
-	
+		}}
+
 	@Override
 	public void clear() {
-		final Node[] old = this.hTable;
-		final int oldCapacity = capacity;
+		final Object[] old = this.hTable;
+		final int oldCapacity = hTable.length;
 		for(int i = oldCapacity; --i >= 0;) {
 			old[i] = null;
 			this.capacity = DEFAULT_CAPACITY;
-			this.hTable = new Node[this.capacity];
+			this.hTable = new Object[this.capacity];
 			this.size = 0;
 		}	
 	}
@@ -347,68 +166,98 @@ public class HashArrayTable extends Table {
 
 	@Override
 	public int capacity() {
-		return capacity;
+		return hTable.length;
 	}
-
+ 
 	@Override
 	public Iterator<List<Object>> iterator() {
-	return new iteratorTable(this.hTable, this.size);
+		return new Iterator<>() {
+			int index = 0;
+			@Override
+			public boolean hasNext() {
+				if(index >= hTable.length) {
+					return false;
+				}
+				if(hTable[index]==null || hTable[index]==TOMBSTONE) {
+					while(hTable[index] == null||hTable[index] == TOMBSTONE) {
+						index++;
+						if(index >= hTable.length) {
+							return false;
+						}
+					}
+				}
+				return index < hTable.length;
+			}
+			@SuppressWarnings("unchecked")
+			@Override
+			public List<Object> next() {
+			if (hasNext() != true) {
+				throw new NoSuchElementException();
+			}
+			Object temp = hTable[index];
+			index++;
+			return (List<Object>) temp;
+			}
+		};
 	}
-	private int hash1(int keyHash) {
-		return keyHash%capacity;	
+	public int perfectSquare(int step) {
+		int stepVal = 0;
+		if(step%2 == 0) {
+			stepVal = step*step;
+		}
+		else {
+			stepVal = 0 - step*step;
+		}
+		return stepVal;
 	}
-	private int hash2(int keyHash) {
-		return(keyHash/capacity)%capacity;
-	}
+	
+	@SuppressWarnings("unchecked")
 	public void rehash() {
-		final int oldCapacity = capacity;
-		final int threshold = (int) Math.min(oldCapacity*loadFactor, MAX_SIZE +1);
-		
-		if (size < threshold) {
-			return;
-		}
-		final Node[] copy = this.hTable.clone();
-		final int oldSize = this.size;
-		capacity = Math.min(capacity*2+1, MAX_SIZE);
-		
-		if(oldCapacity == capacity) {
-			return;
-		}
-		hTable = new Node[capacity];
+		final int oldCapacity = hTable.length;
+		size = 0;
+		Object[] copy = hTable;
+		int newC = 0;
+		newC = nextPrime(oldCapacity);
+		hTable = new Object[newC];
 		
 		for(int i = 0; i<oldCapacity; ++i) {
-			if(copy[i] != null) {
-				put(copy[i].value);
+			if(copy[i] != null && copy[i] != TOMBSTONE) {
+				put((List<Object>) copy[i]);
 			}
 		}
-		this.size = oldSize;
 	}
-	private static class iteratorTable implements Iterator<List<Object>> {
-		private final int size;
-		private final Node[] items;
-		private int index = 0;
-		
-		public iteratorTable(Node[] org, int size){
-			this.size = size;
-			this.items = new Node[size];
-			
-			for(int i = 0, j = 0; i < org.length; i++) {
-				if(null == org[i]) continue;
-				items[j++] = org[i];
+	
+	private boolean isPrime(int number){
+		if(number%2 == 0) {
+			return false;
+		}	
+		int count = 0;
+		for (int i = 3; i<number; i++) {
+			if(number%i == 0) {
+				count++;
 			}
+			i++;
+		}
+		if(count >= 1) {
+			return false;
+		}
+		else {
+			return true;
+		}
 		}
 		
-		@Override
-		public boolean hasNext() {
-			// TODO Auto-generated method stub
-			return index<size;
-		}
-
-		@Override
-		public List<Object> next() {
-			// TODO Auto-generated method stub
-			return items[index++].value;
+		private int nextPrime(int prev) {
+		int newNum = prev*2 +1;
+			if(newNum%4 != 3) {
+				newNum = newNum+2;
+			}
+			while (isPrime(newNum) == false) {
+				newNum = newNum+4;
+			}
+			return newNum;
 		}
 		
-	}
+	private int wrap (int index) {
+		return Math.floorMod(index, hTable.length);	
+		}
 }
