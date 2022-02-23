@@ -6,6 +6,21 @@ This is the term project for **CS 210: File and Data Structures**. Follow the in
 
 I am the author of all original work committed to this repository, as identified below:
 
+<<<<<<< HEAD
++ **Full Name:** Peter Francis Zekonis
++ **University Email:** pfz00001@mix.wvu.edu
++ **Student ID:** 800323850
+
+Co-Author Identification
+My peer was a co-author of some original work committed to this repository, as identified below:
+
+Full Name: Remy Rodriguez
+Contribution: Description of Module, File, Task, etc
+
+## Academic Integrity Pledge
+
+By committing my author identification above, I pledge to comply with the academic integrity policy as stated in the syllabus. I acknowledge that I can earn no grades in the course until I have done so.
+=======
 + **Full Name:** My Full Name
 + **University Email:** example@mix.wvu.edu
 + **Student ID:** 000000000
@@ -20,3 +35,4 @@ My peer was a co-author of some original work committed to this repository, as i
 ## Academic Integrity Pledge
 
 By committing my author identification above, I pledge to comply with the academic integrity policy as stated in the syllabus. I acknowledge that I can earn no grades in the course until I have done so.
+>>>>>>> refs/remotes/upstream/master
